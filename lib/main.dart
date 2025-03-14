@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/setup/backend_url_screen.dart';
 import 'screens/auth/register_screen.dart';
-import 'screens/auth/login_screen.dart' as login; // Import the login screen with a prefix
-import 'screens/home_screen.dart'; // This is a screen you should create for after login
-import 'screens/admin/admin_home_screen.dart'; // Import the admin home screen
-import 'screens/auth/logout_screen.dart'; // Import the logout screen
+import 'screens/auth/login_screen.dart' as login;
+import 'screens/home_screen.dart';
+import 'screens/admin/admin_home_screen.dart';
+import 'screens/auth/logout_screen.dart';
 
 void main() {
   runApp(MyApp());
@@ -19,7 +19,7 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  Widget _initialScreen = Center(child: CircularProgressIndicator());
+  Widget _initialScreen = SplashScreen(); // Use the splash screen as the initial screen
 
   @override
   void initState() {
@@ -28,6 +28,9 @@ class MyAppState extends State<MyApp> {
   }
 
   Future<void> _checkIfBackendUrlSaved() async {
+    // Simulate a splash screen delay by waiting for 3 seconds
+    await Future.delayed(Duration(seconds: 3));
+
     final prefs = await SharedPreferences.getInstance();
     final backendUrl = prefs.getString('backend_url');
     final authToken = prefs.getString('auth_token');
@@ -35,11 +38,11 @@ class MyAppState extends State<MyApp> {
 
     setState(() {
       if (backendUrl == null || backendUrl.isEmpty) {
-        _initialScreen = BackendUrlScreen();  // Ask user to input backend URL
+        _initialScreen = BackendUrlScreen();
       } else if (authToken != null && authToken.isNotEmpty) {
-        _initialScreen = HomeScreen();  // Go to home screen if token is saved
+        _initialScreen = HomeScreen();
       } else {
-        _initialScreen = RegisterScreen();  // Go to register screen if no token is saved
+        _initialScreen = RegisterScreen();
       }
     });
   }
@@ -54,13 +57,54 @@ class MyAppState extends State<MyApp> {
       initialRoute: '/',
       routes: {
         '/': (context) => _initialScreen,
-        '/login': (context) => login.LoginScreen(), // Add this route
+        '/login': (context) => login.LoginScreen(),
         '/register': (context) => RegisterScreen(),
-        '/home': (context) => HomeScreen(), // After login, the user is directed to this screen
-        '/backend_url': (context) => BackendUrlScreen(), // Add this route
-        '/admin_home': (context) => AdminHomeScreen(), // Add this route
-        '/logout': (context) => LogoutScreen(), // Add this route
+        '/home': (context) => HomeScreen(),
+        '/backend_url': (context) => BackendUrlScreen(),
+        '/admin_home': (context) => AdminHomeScreen(),
+        '/logout': (context) => LogoutScreen(),
       },
+    );
+  }
+}
+
+
+class SplashScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white, // Set the background color to white
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Display the logo with proper aspect ratio
+            Image.asset(
+              'assets/splash.png', // Replace with your logo image
+              width: 250, // Adjust width to keep aspect ratio intact
+              height: 187.5, // Adjust height based on aspect ratio (250 * 3/4 = 187.5)
+            ),
+            SizedBox(height: 30), // Space between logo and text
+            // Title of the application
+            Text(
+              'Emotion Tracker',
+              style: TextStyle(
+                fontSize: 32, // Larger font for a more professional feel
+                fontWeight: FontWeight.w600, // Use a lighter weight for modern style
+                color: Colors.blue, // You can change the color to match your branding
+                letterSpacing: 1.5, // Add spacing for a cleaner look
+                fontFamily: 'Roboto', // Consider using a modern, clean font
+              ),
+            ),
+            SizedBox(height: 20), // Additional spacing for balance
+            // A loading indicator for a smooth transition
+            CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -151,8 +151,10 @@ class HomeScreenState extends State<HomeScreen> {
 
     if (backendUrl.isNotEmpty && authToken.isNotEmpty) {
       final emotions = await _emotionService.fetchEmotions(backendUrl, authToken);
+      
+      // Reverse the order of the emotions list so the latest emotion appears first
       setState(() {
-        _emotions = emotions; // Update the list of emotions
+        _emotions = emotions.reversed.toList(); // Reverse the list here
       });
     } else {
       logger.e('No backend URL or auth token found');
@@ -226,12 +228,12 @@ class HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Emotion Felt',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueGrey[800],
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   value: _emotionController.text.isNotEmpty ? _emotionController.text : null,
                   decoration: InputDecoration(
@@ -247,7 +249,9 @@ class HomeScreenState extends State<HomeScreen> {
                       borderSide: BorderSide(color: Colors.blueAccent, width: 2),
                     ),
                   ),
-                  items: ['Anxiety', 'Happy', 'Sad', 'Panic']
+                  items: ['Anxiety', 'Happy', 'Sad', 'Stressed',
+                          'Angry', 'Fear', 'Frustration' , 'Jealousy',
+                          'Embarrassment', 'Excitement' , 'Surprise', 'Calmness' , 'Irritated']
                       .map((emotion) => DropdownMenuItem<String>(
                             value: emotion,
                             child: Text(emotion),
@@ -265,12 +269,12 @@ class HomeScreenState extends State<HomeScreen> {
                 Text(
                   'Note',
                   style: TextStyle(
-                    fontSize: 18,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.blueGrey[800],
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 12),
                 TextField(
                   controller: _noteController,
                   decoration: InputDecoration(
@@ -295,7 +299,7 @@ class HomeScreenState extends State<HomeScreen> {
                 // Emotion Intensity Slider
                 Text(
                   'Emotion Intensity: ${_intensity.toInt()}',
-                  style: TextStyle(fontSize: 18, color: Colors.blueGrey[800]),
+                  style: TextStyle(fontSize: 20, color: Colors.blueGrey[800]),
                 ),
                 Slider(
                   value: _intensity,
@@ -331,32 +335,75 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      // View Emotion Page
+      // View Emotion Page with Beautiful UX (Cards)
       Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
           child: _emotions.isEmpty
-              ? Text('No emotions logged yet.')
+              ? Text('No emotions logged yet.', style: TextStyle(fontSize: 18, color: Colors.blueGrey[800]))
               : ListView.builder(
                   itemCount: _emotions.length,
                   itemBuilder: (context, index) {
                     final emotion = _emotions[index];
-                    return Card(
-                      margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: ListTile(
-                        title: Text('${emotion['emotion_felt']}'),
-                        subtitle: Text(
-                            'Intensity: ${emotion['emotion_intensity']} - Note: ${emotion['note']}'),
-                      ),
-                    );
+                    return EmotionCard(emotion: emotion);
                   },
                 ),
         ),
       ),
       // Placeholder pages for other sections
-      Center(child: Text('Analytics Page')),
+      Center(child: Text('Analytics Coming Soon')),
     ];
 
     return pages[_selectedIndex]; // Show selected page content
+  }
+}
+
+class EmotionCard extends StatelessWidget {
+  final Map<String, dynamic> emotion;
+
+  const EmotionCard({Key? key, required this.emotion}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final timestamp = emotion['timestamp'];
+
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8.0),
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              emotion['emotion_felt'] ?? 'No emotion',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[700],
+              ),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Note: ${emotion['note'] ?? 'No notes'}',
+              style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Intensity: ${emotion['emotion_intensity']}',
+              style: TextStyle(fontSize: 16, color: Colors.blueGrey[600]),
+            ),
+            SizedBox(height: 8),
+            Text(
+              'Timestamp: $timestamp',  // Display timestamp as is
+              style: TextStyle(fontSize: 14, color: Colors.blueGrey[400]),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
