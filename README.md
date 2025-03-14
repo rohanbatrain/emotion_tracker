@@ -1,4 +1,4 @@
-# second_brain_database_flutter
+# emotion_tracker
 
 A new Flutter project.
 

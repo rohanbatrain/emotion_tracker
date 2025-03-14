@@ -1,4 +1,4 @@
-package com.example.second_brain_database_flutter
+package com.example.emotion_tracker
 
 import io.flutter.embedding.android.FlutterActivity
 

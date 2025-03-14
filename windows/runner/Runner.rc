@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "second_brain_database_flutter" "\0"
+            VALUE "FileDescription", "emotion_tracker" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "second_brain_database_flutter" "\0"
+            VALUE "InternalName", "emotion_tracker" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "second_brain_database_flutter.exe" "\0"
-            VALUE "ProductName", "second_brain_database_flutter" "\0"
+            VALUE "OriginalFilename", "emotion_tracker.exe" "\0"
+            VALUE "ProductName", "emotion_tracker" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

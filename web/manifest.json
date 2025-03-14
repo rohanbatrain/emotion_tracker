@@ -1,6 +1,6 @@
 {
-    "name": "second_brain_database_flutter",
-    "short_name": "second_brain_database_flutter",
+    "name": "emotion_tracker",
+    "short_name": "emotion_tracker",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

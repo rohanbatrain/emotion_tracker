@@ -6,10 +6,10 @@ class Menu extends StatelessWidget {
   final VoidCallback onResetBackendUrl;
 
   const Menu({
-    Key? key,
+    super.key,
     required this.onLogout,
     required this.onResetBackendUrl,
-  }) : super(key: key);
+  });
 
   Future<void> _resetBackendUrl() async {
     final prefs = await SharedPreferences.getInstance();
