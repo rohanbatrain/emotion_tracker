@@ -43,6 +43,36 @@ class EmotionService {
       logger.e('Error sending emotion data: $e');
     }
   }
+
+  // Function to fetch all emotions from the backend
+  Future<List<Map<String, dynamic>>> fetchEmotions(
+    String backendUrl,
+    String authToken,
+  ) async {
+    final url = Uri.parse('$backendUrl/user/v1/emotion_tracker/get');
+
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $authToken',
+    };
+
+    try {
+      final response = await http.get(url, headers: headers);
+
+      if (response.statusCode == 200) {
+        // Parse the response body into a list of emotions
+        final List<dynamic> responseData = json.decode(response.body);
+        return responseData.map((emotion) => emotion as Map<String, dynamic>).toList();
+      } else {
+        // Handle error
+        logger.e('Failed to fetch emotions. Status code: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      logger.e('Error fetching emotions: $e');
+      return [];
+    }
+  }
 }
 
 class HomeScreen extends StatefulWidget {
@@ -62,11 +92,17 @@ class HomeScreenState extends State<HomeScreen> {
   double _intensity = 5.0;  // Default intensity value
   final logger = Logger();
 
+  List<Map<String, dynamic>> _emotions = []; // Store the fetched emotions
+
   // Function for handling item tap on the bottom nav
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
+    if (_selectedIndex == 1) {
+      // Fetch emotions when "View Emotion" tab is selected
+      _fetchEmotions();
+    }
   }
 
   // Function to log emotion with user input
@@ -101,6 +137,22 @@ class HomeScreenState extends State<HomeScreen> {
       _noteController.clear();
       setState(() {
         _intensity = 5.0;  // Reset slider to default
+      });
+    } else {
+      logger.e('No backend URL or auth token found');
+    }
+  }
+
+  // Function to fetch emotions from the backend
+  void _fetchEmotions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final backendUrl = prefs.getString('backend_url') ?? '';
+    final authToken = prefs.getString('auth_token') ?? '';
+
+    if (backendUrl.isNotEmpty && authToken.isNotEmpty) {
+      final emotions = await _emotionService.fetchEmotions(backendUrl, authToken);
+      setState(() {
+        _emotions = emotions; // Update the list of emotions
       });
     } else {
       logger.e('No backend URL or auth token found');
@@ -279,8 +331,29 @@ class HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
+      // View Emotion Page
+      Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+          child: _emotions.isEmpty
+              ? Text('No emotions logged yet.')
+              : ListView.builder(
+                  itemCount: _emotions.length,
+                  itemBuilder: (context, index) {
+                    final emotion = _emotions[index];
+                    return Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListTile(
+                        title: Text('${emotion['emotion_felt']}'),
+                        subtitle: Text(
+                            'Intensity: ${emotion['emotion_intensity']} - Note: ${emotion['note']}'),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ),
       // Placeholder pages for other sections
-      Center(child: Text('View Emotion Page')),
       Center(child: Text('Analytics Page')),
     ];
 
