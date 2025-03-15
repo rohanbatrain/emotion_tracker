@@ -8,7 +8,7 @@
 PRODUCT_NAME = emotion_tracker
 
 // The application's bundle identifier
-PRODUCT_BUNDLE_IDENTIFIER = com.example.secondBrainDatabaseFlutter
+PRODUCT_BUNDLE_IDENTIFIER = com.example.emotionTracker
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2024 com.example. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2025 com.example. All rights reserved.

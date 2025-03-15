@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/setup/backend_url_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/auth/login_screen.dart' as login;
-import 'screens/home_screen.dart';
+import 'screens/home/home_screen.dart';
 import 'screens/admin/admin_home_screen.dart';
 import 'screens/auth/logout_screen.dart';
 
@@ -70,6 +70,8 @@ class MyAppState extends State<MyApp> {
 
 
 class SplashScreen extends StatelessWidget {
+  const SplashScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

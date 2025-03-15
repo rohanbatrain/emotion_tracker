@@ -1,4 +1,4 @@
-package in.rohanbatra.emotion_tracker
+package com.example.emotion_tracker
 
 import io.flutter.embedding.android.FlutterActivity
 
