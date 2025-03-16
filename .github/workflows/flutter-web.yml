@@ -17,11 +17,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Flutter (specify an exact version)
+      # Set up Flutter (specify an exact version compatible with emotion_tracker)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.7.0'  # Specify a specific stable version
+          flutter-version: '3.6.2'  # Specify Flutter version 3.6.2 to match emotion_tracker's Dart version
 
       # Install dependencies
       - name: Install dependencies
