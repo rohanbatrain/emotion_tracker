@@ -42,5 +42,5 @@ jobs:
       
           # Git branch where assets will be deployed (default is gh-pages)
           target_branch: gh-pages
-
+          token: ${{ secrets.GITHUB_TOKEN }}  # Use the GITHUB_TOKEN to authenticate
 
