@@ -20,9 +20,7 @@ jobs:
       # Set up Flutter (specify an exact version compatible with emotion_tracker)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.6.2'  # Specify Flutter version 3.6.2 to match emotion_tracker's Dart version
-
+         
       # Install dependencies
       - name: Install dependencies
         run: |
