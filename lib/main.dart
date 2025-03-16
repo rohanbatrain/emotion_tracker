@@ -50,7 +50,7 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Second Brain Database',
+      title: 'Emotion Tracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
