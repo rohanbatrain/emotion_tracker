@@ -20,6 +20,21 @@ jobs:
       # Set up Flutter (specify an exact version compatible with emotion_tracker)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
+
+                 
+      # Install dependencies
+      - name: Switching to beta 
+        run: |
+          flutter channel beta
+      
+      - name: Reflecting beta changes
+        run: |
+          flutter create .
+
+      # Install dependencies
+      - name: Enabling Web 
+        run: |
+          flutter config --enable-web
          
       # Install dependencies
       - name: Install dependencies
