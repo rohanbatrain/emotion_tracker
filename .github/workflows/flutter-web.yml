@@ -31,10 +31,16 @@ jobs:
         run: |
           flutter build web --release
 
-      # Deploy to GitHub Pages
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: GitHub Pages
+        uses: crazy-max/ghaction-github-pages@v4.1.0
         with:
-          branch: gh-pages  # The branch to deploy to (this will be created automatically if it doesn't exist)
-          folder: build/web  # Folder to deploy
-          token: ${{ secrets.GITHUB_TOKEN }}  # Token to authenticate and allow deployment
+          # Required: Build directory to deploy
+          build_dir: build/web
+      
+          # GitHub repository where assets will be deployed (default is the current repository)
+          repo: ${{ github.repository }}
+      
+          # Git branch where assets will be deployed (default is gh-pages)
+          target_branch: gh-pages
+
+
