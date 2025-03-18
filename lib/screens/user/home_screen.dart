@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'log_emotion_screen.dart';
 import 'view_emotions_screen.dart';
 import 'analytics_screen.dart';
-import 'menu.dart';
+import '../menu.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

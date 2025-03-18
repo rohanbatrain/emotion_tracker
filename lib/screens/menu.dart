@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import './user/settings_screen.dart'; // Import the SettingsScreen
 
 class Menu extends StatelessWidget {
   final VoidCallback onLogout;
@@ -56,6 +57,13 @@ class Menu extends StatelessWidget {
     );
   }
 
+  void _navigateToSettingsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const SettingsScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
@@ -67,6 +75,8 @@ class Menu extends StatelessWidget {
           onLogout();
         } else if (result == 'reset_backend_url') {
           _showResetBackendUrlConfirmationDialog(context);
+        } else if (result == 'settings') {
+          _navigateToSettingsScreen(context); // Navigate to Settings screen
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -77,6 +87,10 @@ class Menu extends StatelessWidget {
         const PopupMenuItem<String>(
           value: 'reset_backend_url',
           child: Text('Reset Backend URL'),
+        ),
+        const PopupMenuItem<String>(
+          value: 'settings',
+          child: Text('Settings'),
         ),
       ],
     );

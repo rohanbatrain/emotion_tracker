@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/setup/backend_url_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/auth/login_screen.dart' as login;
-import 'screens/home/home_screen.dart';
+import 'screens/user/home_screen.dart';
 import 'screens/admin/admin_home_screen.dart';
 import 'screens/auth/logout_screen.dart';
 
