@@ -1,3 +1,4 @@
+import 'package:emotion_tracker/screens/user/offline/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -52,14 +53,16 @@ class _DebugScreenState extends State<DebugScreen> {
               height: 2,
               color: Colors.grey,
             ),
-            onChanged: (String? newValue) {
-              setState(() {
-                _selectedView = newValue!;
-                if (_selectedView == 'Shared Preference') {
-                  _loadSharedPreferencesData();
-                }
-              });
-            },
+            onChanged: _isDebugEnabled
+                ? (String? newValue) {
+                    setState(() {
+                      _selectedView = newValue!;
+                      if (_selectedView == 'Shared Preference') {
+                        _loadSharedPreferencesData();
+                      }
+                    });
+                  }
+                : null,
             items: <String>[
               'Select View',
               'Shared Preference', // Removed Offline Emotion from the dropdown
@@ -72,19 +75,53 @@ class _DebugScreenState extends State<DebugScreen> {
           ),
         ],
       ),
-      body: Center(
-        child: _selectedView == 'Select View'
-            ? const Text(
-                'Select an option from the dropdown to view debug info.',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              )
-            : _selectedView == 'Shared Preference'
-                ? _buildSharedPreferencesView()
-                : const Text(
-                    'Other debug views coming soon...',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-      ),
+      body: _isDebugEnabled
+          ? Center(
+              child: _selectedView == 'Select View'
+                  ? const Text(
+                      'Select an option from the dropdown to view debug info.',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                    )
+                  : _selectedView == 'Shared Preference'
+                      ? _buildSharedPreferencesView()
+                      : const Text(
+                          'Other debug views coming soon...',
+                          style:
+                              TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                        ),
+            )
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'Debug mode is disabled. Please enable debug mode in the settings.',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.red,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Navigate to the settings screen where the user can enable debug mode
+                        Navigator.push(context,
+  MaterialPageRoute(builder: (context) => const OfflineSettingsScreen()),
+);
+
+                        
+                      },
+                      child: const Text('Go to Settings'),
+                    ),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 

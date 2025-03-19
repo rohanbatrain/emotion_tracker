@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
+import 'package:emotion_tracker/main.dart'; // Import MyApp to access the ValueNotifier
 
 class OfflineSettingsScreen extends StatefulWidget {
   const OfflineSettingsScreen({super.key});
@@ -11,25 +12,36 @@ class OfflineSettingsScreen extends StatefulWidget {
 
 class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   bool _isEncryptionEnabled = false;
-  TextEditingController _encryptionKeyController = TextEditingController();
+  final TextEditingController _encryptionKeyController = TextEditingController();
   bool _isKeyVisible = false;
 
   // Debug mode flag
   bool _isDebugEnabled = false;
 
+  // Dark mode flag
+  bool _isDarkMode = false;
+
   @override
   void initState() {
     super.initState();
-    _loadEncryptionSettings();
+    _loadSettings();
   }
 
-  Future<void> _loadEncryptionSettings() async {
+  // Load settings from SharedPreferences
+  Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _isEncryptionEnabled = prefs.getBool('is_encryption_enabled') ?? false;
       _encryptionKeyController.text = prefs.getString('encryption_key') ?? '';
-      _isDebugEnabled = prefs.getBool('is_debug_enabled') ?? false; // Load debug setting
+      _isDebugEnabled = prefs.getBool('is_debug_enabled') ?? false;
+      _isDarkMode = prefs.getBool('is_dark_mode') ?? false; // Load dark mode setting
     });
+  }
+
+  // Save dark mode setting
+  Future<void> _saveDarkModeSetting(bool value) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_dark_mode', value);
   }
 
   void _toggleEncryption(bool value) async {
@@ -63,7 +75,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
         return AlertDialog(
           title: const Text('Important Warning!'),
           content: const Text(
-            'Disabling encryption will remove the current encryption key and make your data unencrypted. Proceed with caution.',
+            'Disabling encryption will remove the current encryption key and make your data unencrypted. Proceed with caution. All of the encrypted notes cannot be decrypted and should be deleted, use clear all data after this step.',
           ),
           actions: <Widget>[
             TextButton(
@@ -94,11 +106,11 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   }
 
   String _generateRandomKey() {
-    const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    Random _rnd = Random();
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    Random rnd = Random();
     return String.fromCharCodes(Iterable.generate(
       32,
-      (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length)),
+      (_) => chars.codeUnitAt(rnd.nextInt(chars.length)),
     ));
   }
 
@@ -112,7 +124,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
     final prefs = await SharedPreferences.getInstance();
 
     // List of keys to keep (e.g., 'encryption_key')
-    const List<String> keysToKeep = ['encryption_key', 'is_encryption_enabled', 'is_debug_enabled'];
+    const List<String> keysToKeep = ['encryption_key', 'is_encryption_enabled', 'is_debug_enabled', 'is_dark_mode'];
 
     // Get all keys stored in SharedPreferences
     final keys = prefs.getKeys();
@@ -165,6 +177,17 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
     });
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('is_debug_enabled', value);
+  }
+
+  void _toggleDarkMode(bool value) async {
+    setState(() {
+      _isDarkMode = value;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_dark_mode', value);
+
+    // Notify the app to update the theme
+    (context.findAncestorWidgetOfExactType<MyApp>()?.isDarkModeNotifier)?.value = value;
   }
 
   @override
@@ -267,6 +290,19 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                   ),
                 ],
               ),
+            const SizedBox(height: 20),
+
+            // Dark Mode
+            SwitchListTile(
+              title: const Text(
+                'Enable Dark Mode',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              value: _isDarkMode,
+              onChanged: (bool value) {
+                _toggleDarkMode(value);
+              },
+            ),
             const SizedBox(height: 20),
 
             // Clear All Data
