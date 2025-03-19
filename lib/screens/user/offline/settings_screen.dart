@@ -226,7 +226,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                   ),
                 ),
               ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24), // Adjusted spacing for uniformity
 
             // Toggle Encryption
             SwitchListTile(
@@ -239,7 +239,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                 _toggleEncryption(value);
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24), // Adjusted spacing for uniformity
 
             // Encryption key input field
             if (_isEncryptionEnabled)
@@ -290,7 +290,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                   ),
                 ],
               ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24), // Adjusted spacing for uniformity
 
             // Dark Mode
             SwitchListTile(
@@ -303,7 +303,21 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                 _toggleDarkMode(value);
               },
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 24), // Adjusted spacing for uniformity
+
+            // Load Online Version
+            ListTile(
+              title: const Text('Load Online Version'),
+              subtitle: const Text('Switch to the online version of the app.'),
+              trailing: const Icon(Icons.cloud),
+              onTap: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('offline_mode', false); // Disable offline mode
+                if (!mounted) return;
+                Navigator.pushReplacementNamed(context, '/backend_url'); // Redirect to backend URL screen
+              },
+            ),
+            const SizedBox(height: 24), // Adjusted spacing for uniformity
 
             // Clear All Data
             ListTile(

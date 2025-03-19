@@ -71,10 +71,13 @@ class SplashScreenState extends State<SplashScreen> {
     final prefs = await SharedPreferences.getInstance();
     final backendUrl = prefs.getString('backend_url');
     final authToken = prefs.getString('auth_token');
+    final isOfflineMode = prefs.getBool('offline_mode') ?? false;
 
     if (!mounted) return;
 
-    if (backendUrl == null || backendUrl.isEmpty) {
+    if (isOfflineMode) {
+      Navigator.pushReplacementNamed(context, '/offline/home_screen');
+    } else if (backendUrl == null || backendUrl.isEmpty) {
       Navigator.pushReplacementNamed(context, '/backend_url');
     } else if (authToken != null && authToken.isNotEmpty) {
       Navigator.pushReplacementNamed(context, '/home');
