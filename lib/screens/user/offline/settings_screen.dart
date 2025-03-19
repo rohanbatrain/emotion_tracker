@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:math';
+
 class OfflineSettingsScreen extends StatefulWidget {
   const OfflineSettingsScreen({super.key});
 
@@ -13,6 +14,9 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   TextEditingController _encryptionKeyController = TextEditingController();
   bool _isKeyVisible = false;
 
+  // Debug mode flag
+  bool _isDebugEnabled = false;
+
   @override
   void initState() {
     super.initState();
@@ -24,6 +28,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
     setState(() {
       _isEncryptionEnabled = prefs.getBool('is_encryption_enabled') ?? false;
       _encryptionKeyController.text = prefs.getString('encryption_key') ?? '';
+      _isDebugEnabled = prefs.getBool('is_debug_enabled') ?? false; // Load debug setting
     });
   }
 
@@ -104,28 +109,27 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   }
 
   Future<void> _clearAllData() async {
-  final prefs = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
 
-  // List of keys to keep (e.g., 'encryption_key')
-  const List<String> keysToKeep = ['encryption_key', 'is_encryption_enabled'];
+    // List of keys to keep (e.g., 'encryption_key')
+    const List<String> keysToKeep = ['encryption_key', 'is_encryption_enabled', 'is_debug_enabled'];
 
-  // Get all keys stored in SharedPreferences
-  final keys = prefs.getKeys();
+    // Get all keys stored in SharedPreferences
+    final keys = prefs.getKeys();
 
-  // Loop through all keys and remove those that are not in the keysToKeep list
-  for (String key in keys) {
-    if (!keysToKeep.contains(key)) {
-      await prefs.remove(key);
+    // Loop through all keys and remove those that are not in the keysToKeep list
+    for (String key in keys) {
+      if (!keysToKeep.contains(key)) {
+        await prefs.remove(key);
+      }
     }
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('All data cleared successfully, except encryption settings!')),
+    );
   }
-
-  if (!mounted) return;
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(content: Text('All data cleared successfully, except encryption settings!')),
-  );
-}
-
 
   Future<void> _showClearDataConfirmationDialog() async {
     return showDialog<void>(
@@ -155,6 +159,14 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
     );
   }
 
+  void _toggleDebugMode(bool value) async {
+    setState(() {
+      _isDebugEnabled = value;
+    });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('is_debug_enabled', value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -165,6 +177,34 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: ListView(
           children: [
+            // Debug Mode
+            SwitchListTile(
+              title: const Text(
+                'Enable Debug Mode',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              value: _isDebugEnabled,
+              onChanged: (bool value) {
+                _toggleDebugMode(value);
+              },
+            ),
+            if (_isDebugEnabled)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Container(
+                  color: Colors.yellow[200],
+                  padding: const EdgeInsets.all(8.0),
+                  child: const Text(
+                    'Warning: Debug mode is enabled. This can leak sensitive information. Proceed with caution!',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ),
+            const SizedBox(height: 20),
+
             // Toggle Encryption
             SwitchListTile(
               title: const Text(
