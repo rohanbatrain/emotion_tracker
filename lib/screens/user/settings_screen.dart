@@ -11,7 +11,7 @@ class SettingsScreen extends StatefulWidget {
 
 class _SettingsScreenState extends State<SettingsScreen> {
   bool _isEncryptionEnabled = false;
-  TextEditingController _encryptionKeyController = TextEditingController();
+  final TextEditingController _encryptionKeyController = TextEditingController();
   bool _isKeyVisible = false; // Tracks whether the encryption key is visible
 
   @override
@@ -133,11 +133,11 @@ Future<bool?> _showEncryptionWarningDialog() {
 
   // Generate a random 32-character key
   String _generateRandomKey() {
-    const _chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    Random _rnd = Random();
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    Random rnd = Random();
     return String.fromCharCodes(Iterable.generate(
       32, 
-      (_) => _chars.codeUnitAt(_rnd.nextInt(_chars.length)),
+      (_) => chars.codeUnitAt(rnd.nextInt(chars.length)),
     ));
   }
 
