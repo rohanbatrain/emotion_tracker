@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './user/settings_screen.dart'; // Import the SettingsScreen
+import 'settings_screen.dart'; // Import the SettingsScreen
 
 class Menu extends StatelessWidget {
   final VoidCallback onLogout;
