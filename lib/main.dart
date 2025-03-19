@@ -3,9 +3,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'screens/setup/backend_url_screen.dart';
 import 'screens/auth/register_screen.dart';
 import 'screens/auth/login_screen.dart' as login;
-import 'screens/user/home_screen.dart';
+import 'screens/user/online/home_screen.dart';
 import 'screens/admin/admin_home_screen.dart';
 import 'screens/auth/logout_screen.dart';
+import 'screens/user/offline/home_screen.dart'; // Import OfflineHomeScreen
 
 void main() {
   runApp(MyApp());
@@ -63,6 +64,7 @@ class MyAppState extends State<MyApp> {
         '/backend_url': (context) => BackendUrlScreen(),
         '/admin_home': (context) => AdminHomeScreen(),
         '/logout': (context) => LogoutScreen(),
+        '/offline/home_screen': (context) => OfflineHomeScreen(), // Add this route
       },
     );
   }

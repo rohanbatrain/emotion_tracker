@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'log_emotion_screen.dart';
 import 'view_emotions_screen.dart';
-import 'analytics_screen.dart';
-import '../menu.dart';
+import 'menu.dart'; // Import OfflineMenu
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+class OfflineHomeScreen extends StatefulWidget {
+  const OfflineHomeScreen({super.key});
 
   @override
-  HomeScreenState createState() => HomeScreenState();
+  OfflineHomeScreenState createState() => OfflineHomeScreenState();
 }
 
-class HomeScreenState extends State<HomeScreen> {
+class OfflineHomeScreenState extends State<OfflineHomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _screens = [
-    LogEmotionScreen(),
-    ViewEmotionsScreen(),
-    AnalyticsScreen(),
+    OfflineLogEmotionScreen(),
+    OfflineViewEmotionsScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -26,24 +24,13 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void _logout() {
-    // Implement logout functionality
-  }
-
-  void _resetBackendUrl() {
-    // Implement reset backend URL functionality
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Emotion Tracker'),
-        actions: [
-          Menu(
-            onLogout: _logout,
-            onResetBackendUrl: _resetBackendUrl,
-          ),
+        title: const Text('Emotion Tracker'),
+        actions: const [
+          OfflineMenu(), // Add the OfflineMenu here
         ],
       ),
       body: _screens[_selectedIndex],
@@ -58,10 +45,6 @@ class HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.view_list),
             label: 'View Emotion',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.analytics),
-            label: 'Analytics',
           ),
         ],
       ),

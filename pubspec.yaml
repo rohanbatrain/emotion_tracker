@@ -41,7 +41,7 @@ dependencies:
   logger: ^1.1.0
   intl: ^0.18.0 # Add this line
   fl_chart: ^0.36.0  # Add this for charting purposes
-
+  encrypt: ^5.0.0 # check for the latest version
 
 dev_dependencies:
   flutter_test:
