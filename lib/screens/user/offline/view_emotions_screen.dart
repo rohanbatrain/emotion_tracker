@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:encrypt/encrypt.dart' as encrypt;
 
 class OfflineViewEmotionsScreen extends StatefulWidget {
   const OfflineViewEmotionsScreen({super.key});
@@ -34,6 +35,23 @@ class _OfflineViewEmotionsScreenState extends State<OfflineViewEmotionsScreen> {
 
         // Check if the decoded data is a Map<String, dynamic>
         if (decodedEmotion is Map<String, dynamic>) {
+          // Check if encryption is enabled and if there's encrypted data
+          bool isEncryptionEnabled = prefs.getBool('is_encryption_enabled') ?? false;
+          String? encryptionKey = prefs.getString('encryption_key');
+
+          if (isEncryptionEnabled && encryptionKey != null) {
+            // Check if there's an IV and encrypted note
+            String? encryptedNote = decodedEmotion['note'];
+            String? ivBase64 = decodedEmotion['iv'];
+
+            if (encryptedNote != null && ivBase64 != null) {
+              // Decrypt the note if encryption is enabled
+              String decryptedNote = await _decryptNote(
+                  encryptedNote, ivBase64, encryptionKey);
+              decodedEmotion['note'] = decryptedNote; // Replace encrypted note with decrypted one
+            }
+          }
+
           tempEmotions.add(decodedEmotion);
         }
       } catch (error) {
@@ -45,6 +63,22 @@ class _OfflineViewEmotionsScreenState extends State<OfflineViewEmotionsScreen> {
     setState(() {
       _emotions = tempEmotions;
     });
+  }
+
+  // Decrypt the note value using stored IV
+  Future<String> _decryptNote(
+      String encryptedNote, String ivBase64, String encryptionKey) async {
+    final key = encrypt.Key.fromUtf8(encryptionKey.padRight(32, ' ')); // AES key needs to be 32 bytes
+    final iv = encrypt.IV.fromBase64(ivBase64); // Decode the base64 IV
+
+    // Decode the encrypted note from base64
+    final encryptedData = encrypt.Encrypted.fromBase64(encryptedNote); // Decode the encrypted note
+
+    // Decrypt the note using AES
+    final encrypter = encrypt.Encrypter(encrypt.AES(key));
+    final decrypted = encrypter.decrypt(encryptedData, iv: iv);
+
+    return decrypted;
   }
 
   @override

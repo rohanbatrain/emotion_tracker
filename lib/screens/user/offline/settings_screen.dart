@@ -22,8 +22,8 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   Future<void> _loadEncryptionSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      _isEncryptionEnabled = prefs.getBool('offline_is_encryption_enabled') ?? false;
-      _encryptionKeyController.text = prefs.getString('offline_encryption_key') ?? '';
+      _isEncryptionEnabled = prefs.getBool('is_encryption_enabled') ?? false;
+      _encryptionKeyController.text = prefs.getString('encryption_key') ?? '';
     });
   }
 
@@ -35,16 +35,16 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
           _isEncryptionEnabled = value;
         });
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('offline_is_encryption_enabled', value);
+        await prefs.setBool('is_encryption_enabled', value);
         _clearEncryptionKey();
-        await prefs.remove('offline_encryption_key');
+        await prefs.remove('encryption_key');
       }
     } else {
       setState(() {
         _isEncryptionEnabled = value;
       });
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setBool('offline_is_encryption_enabled', value);
+      await prefs.setBool('is_encryption_enabled', value);
       if (_isEncryptionEnabled) {
         _saveEncryptionKey();
       }
@@ -85,7 +85,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
 
   Future<void> _saveEncryptionKey() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('offline_encryption_key', _encryptionKeyController.text);
+    await prefs.setString('encryption_key', _encryptionKeyController.text);
   }
 
   String _generateRandomKey() {
@@ -104,14 +104,28 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
   }
 
   Future<void> _clearAllData() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    if (!mounted) return;
+  final prefs = await SharedPreferences.getInstance();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('All data cleared successfully!')),
-    );
+  // List of keys to keep (e.g., 'encryption_key')
+  const List<String> keysToKeep = ['encryption_key', 'is_encryption_enabled'];
+
+  // Get all keys stored in SharedPreferences
+  final keys = prefs.getKeys();
+
+  // Loop through all keys and remove those that are not in the keysToKeep list
+  for (String key in keys) {
+    if (!keysToKeep.contains(key)) {
+      await prefs.remove(key);
+    }
   }
+
+  if (!mounted) return;
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(content: Text('All data cleared successfully, except encryption settings!')),
+  );
+}
+
 
   Future<void> _showClearDataConfirmationDialog() async {
     return showDialog<void>(
