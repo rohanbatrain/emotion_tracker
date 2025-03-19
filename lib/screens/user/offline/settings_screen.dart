@@ -195,7 +195,7 @@ class _OfflineSettingsScreenState extends State<OfflineSettingsScreen> {
                   color: Colors.yellow[200],
                   padding: const EdgeInsets.all(8.0),
                   child: const Text(
-                    'Warning: Debug mode is enabled. This can leak sensitive information. Proceed with caution!',
+                    'Warning: Debug mode is enabled. This can leak sensitive information. You might have to restart the app in order to see the changes. Proceed with caution!',
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.red,
