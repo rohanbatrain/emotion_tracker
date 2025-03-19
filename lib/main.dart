@@ -85,8 +85,10 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white, // Dynamic color
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
