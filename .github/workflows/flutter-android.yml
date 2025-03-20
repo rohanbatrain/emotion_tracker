@@ -36,3 +36,40 @@ jobs:
         run: |
           flutter pub get
 
+# Step 4: Decode and set up keystore for signing
+      - name: Decode keystore and set it up
+        run: |
+          echo "$ANDROID_KEYSTORE" | base64 --decode > $HOME/keystore.jks
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
+           # Step 5: Configure Gradle to use the keystore
+      - name: Set up signing configuration in Gradle
+        run: |
+          echo "storeFile file('$HOME/keystore.jks')" >> android/app/build.gradle
+          echo "storePassword ${ANDROID_KEYSTORE_PASSWORD}" >> android/app/build.gradle
+          echo "keyAlias ${ANDROID_KEY_ALIAS}" >> android/app/build.gradle
+          echo "keyPassword ${ANDROID_KEY_PASSWORD}" >> android/app/build.gradle
+
+       # Step 6: Build the APK for release
+      - name: Build APK for release
+        run: flutter build apk --release --no-shrink
+
+      - name: Build AAB for release
+        run: flutter build appbundle --release
+
+      # Step 7: Upload the build artifact (APK)
+      - name: Upload APK as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+      - name: Upload AAB as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: android-aab
+          path: build/app/outputs/bundle/release/app-release.aab
