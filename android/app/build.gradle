@@ -31,16 +31,6 @@ android {
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
-signingConfigs {
-    release {
-        if (project.hasProperty("storeFile")) {
-            storeFile file(project.storeFile)
-            storePassword project.storePassword
-            keyAlias project.keyAlias
-            keyPassword project.keyPassword
-        }
-    }
-}
     buildTypes {
         release {
             // TODO: Add your own signing config for the release build.
