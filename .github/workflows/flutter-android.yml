@@ -1,0 +1,38 @@
+name: Android Release
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the 'main' branch
+  pull_request:
+    branches:
+      - main  # Trigger deployment on PR to the 'main' branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code from the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Flutter (specify an exact version compatible with emotion_tracker)
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+
+                 
+      # Install dependencies
+      - name: Switching to beta 
+        run: |
+          flutter channel beta
+      
+      - name: Reflecting beta changes
+        run: |
+          flutter create .
+
+         
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          flutter pub get
+
