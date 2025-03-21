@@ -43,6 +43,10 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
+      # Testing env
+      - name: Verifying Keystore Location
+        run: echo $ANDROID_KEYSTORE
+      
       # Build APK for release
       - name: Build APK for release
         run: flutter build apk --release --no-shrink
