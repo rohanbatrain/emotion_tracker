@@ -33,16 +33,6 @@ jobs:
         run: |
           flutter pub get
 
-      # Decode keystore and set it up
-      - name: Decode keystore and set it up
-        run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > $HOME/keystore.jks
-        env:
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
       # Set up signing configuration in Gradle
       - name: Set up signing configuration in Gradle
         run: |
