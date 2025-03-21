@@ -33,16 +33,18 @@ jobs:
         run: |
           flutter pub get
 
-      # Set up signing configuration in Gradle
-      - name: Decode keystore and set it up
+      - name: Decode keystore with padding fix
         run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > $HOME/keystore.jks
+          # Fix padding if needed (pad with "=" to length multiple of 4)
+          KEYSIZE=$(echo -n "$ANDROID_KEYSTORE" | wc -c)
+          MOD=$(($KEYSIZE % 4))
+          if [ $MOD -ne 0 ]; then
+            PAD=$((4 - $MOD))
+            ANDROID_KEYSTORE="${ANDROID_KEYSTORE}$(printf '%0.s=' $(seq 1 $PAD))"
+          fi
+          echo "$ANDROID_KEYSTORE" | base64 --decode > /home/runner/keystore.jks
         env:
           ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
-          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-
       
       # Build APK for release
       - name: Build APK for release
