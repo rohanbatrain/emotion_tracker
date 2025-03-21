@@ -73,8 +73,8 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create $VERSION \
-            /home/runner/work/emotion_tracker/emotion_tracker/android/app/build/outputs/bundle/release/app-release.aab \
-            /home/runner/work/emotion_tracker/emotion_tracker/android/app/build/outputs/flutter-apk/app-release.apk \
+            build/outputs/bundle/release/app-release.aab \
+            build/outputs/flutter-apk/app-release.apk \
             --title "Release $VERSION" \
             --notes "Release $VERSION for branch $GITHUB_REF" \
             --repo $GITHUB_REPOSITORY
