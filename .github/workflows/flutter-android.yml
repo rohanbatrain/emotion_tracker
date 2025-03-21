@@ -43,8 +43,7 @@ jobs:
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
-      - name: checking if env is working
-      - run : echo "$ANDROID_KEYSTORE"
+
 
       # Build APK for release
       - name: Build APK for release
