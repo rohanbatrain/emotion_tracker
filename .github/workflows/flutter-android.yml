@@ -33,14 +33,16 @@ jobs:
         run: |
           flutter pub get
 
-      - name: Decode keystore and set it up
+      - name: Copy and decrypt keystore
         run: |
-          echo "$ANDROID_KEYSTORE" | base64 --decode > $HOME/keystore.jks
+          cp emotion_tracker_keystore.jks.gpg $HOME/keystore.jks.gpg
+          gpg --batch --yes --decrypt --passphrase "${{ secrets.ANDROID_KEYSTORE_GPG }}" --output $HOME/keystore.jks $HOME/keystore.jks.gpg
         env:
-          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_GPG: ${{ secrets.ANDROID_KEYSTORE_GPG }}
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+
       
       # Build APK for release
       - name: Build APK for release
