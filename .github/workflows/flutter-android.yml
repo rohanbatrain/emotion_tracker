@@ -33,28 +33,15 @@ jobs:
         run: |
           flutter pub get
 
-name: Generate Keystore
 
-on:
-  push:
-    branches:
-      - main
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Generate Keystore
-      run: |
-        keytool -genkey -v -keystore $HOME/keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias "$ANDROID_KEY_ALIAS" -dname "CN=Rohan Batra, OU=Open Source, O=Rohan Batra, L=Bidholi, ST=Uttrakhand, C=IN" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD"
-      env:
-        ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-        ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+      - name: Generate Keystore
+        run: |
+          keytool -genkey -v -keystore $HOME/keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias "$ANDROID_KEY_ALIAS" -dname "CN=Rohan Batra, OU=Open Source, O=Rohan Batra, L=Bidholi, ST=Uttrakhand, C=IN" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD"
+        env:
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
 
       
       # Build APK for release
