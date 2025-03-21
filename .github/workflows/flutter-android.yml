@@ -45,11 +45,11 @@ jobs:
 
       # Build APK for release
       - name: Build APK for release
-        run: flutter build apk --release --no-shrink
+        run: flutter build apk --release --no-shrink --scan
 
       # Build AAB for release
       - name: Build AAB for release
-        run: flutter build appbundle --release
+        run: flutter build appbundle --release --scan
 
       # Extract the release version from the branch name (e.g., release/v0.0.1 -> v0.0.1)
       - name: Extract release version
