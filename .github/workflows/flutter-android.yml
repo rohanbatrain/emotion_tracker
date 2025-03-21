@@ -3,7 +3,7 @@ name: Android Release
 on:
   push:
     branches:
-      - 'v0.0.*'  # Trigger release workflow on any branch prefixed with 'release/'
+      - 'v0.0.*'
 
 jobs:
   deploy:
