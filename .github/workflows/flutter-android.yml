@@ -50,7 +50,7 @@ jobs:
 
     - name: Generate Keystore
       run: |
-        keytool -genkey -v -keystore keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias "$ANDROID_KEY_ALIAS" -dname "CN=Rohan Batra, OU=Open Source, O=Rohan Batra, L=Bidholi, ST=Uttrakhand, C=IN" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD"
+        keytool -genkey -v -keystore $HOME/keystore.jks -storetype JKS -keyalg RSA -keysize 2048 -validity 10000 -alias "$ANDROID_KEY_ALIAS" -dname "CN=Rohan Batra, OU=Open Source, O=Rohan Batra, L=Bidholi, ST=Uttrakhand, C=IN" -storepass "$ANDROID_KEYSTORE_PASSWORD" -keypass "$ANDROID_KEY_PASSWORD"
       env:
         ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
         ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -61,7 +61,7 @@ jobs:
       - name: Build APK for release
         run: flutter build apk --release --no-shrink
         env:
-            ANDROID_KEYSTORE: ${{ github.workspace }}/keystore.jks 
+            ANDROID_KEYSTORE: $HOME/keystore.jks
             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
             ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
             ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
@@ -70,7 +70,7 @@ jobs:
       - name: Build AAB for release
         run: flutter build appbundle --release
         env:
-            ANDROID_KEYSTORE: ${{ github.workspace }}/keystore.jks 
+            ANDROID_KEYSTORE: $HOME/keystore.jks
             ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
             ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
             ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
