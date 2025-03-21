@@ -34,12 +34,14 @@ jobs:
           flutter pub get
 
       # Set up signing configuration in Gradle
-      - name: Set up signing configuration in Gradle
+      - name: Decode keystore and set it up
         run: |
-          echo "storeFile file('$HOME/keystore.jks')" >> android/app/build.gradle
-          echo "storePassword ${ANDROID_KEYSTORE_PASSWORD}" >> android/app/build.gradle
-          echo "keyAlias ${ANDROID_KEY_ALIAS}" >> android/app/build.gradle
-          echo "keyPassword ${ANDROID_KEY_PASSWORD}" >> android/app/build.gradle
+          echo "$ANDROID_KEYSTORE" | base64 --decode > $HOME/keystore.jks
+        env:
+          ANDROID_KEYSTORE: ${{ secrets.ANDROID_KEYSTORE }}
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
 
       # Build APK for release
       - name: Build APK for release
