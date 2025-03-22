@@ -69,20 +69,44 @@ jobs:
           VERSION=$(echo ${GITHUB_REF} | sed 's/refs\/heads\/release\///')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
-      - name: Print Current Directory
+      - name: Find and rename APK and AAB files
         run: |
-          echo "Current directory:"
+          # Print current directory again for debugging purposes
+          echo "Current directory before searching:"
           pwd
-          echo "Listing contents of the current directory:"
           ls -la
-
-
-      # Create a GitHub Release for the given version
+          
+          # Find the .aab file and .apk file
+          AAB_PATH=$(find build/outputs -name 'app-release.aab')
+          APK_PATH=$(find build/outputs -name 'app-release.apk')
+      
+          # If .aab file is found, rename it
+          if [ -n "$AAB_PATH" ]; then
+            mv "$AAB_PATH" "build/outputs/bundle/release/$VERSION-app-release.aab"
+            AAB_PATH="build/outputs/bundle/release/$VERSION-app-release.aab"
+          else
+            echo "Error: app-release.aab not found!"
+            exit 1
+          fi
+      
+          # If .apk file is found, rename it
+          if [ -n "$APK_PATH" ]; then
+            mv "$APK_PATH" "build/outputs/flutter-apk/$VERSION-app-release.apk"
+            APK_PATH="build/outputs/flutter-apk/$VERSION-app-release.apk"
+          else
+            echo "Error: app-release.apk not found!"
+            exit 1
+          fi
+      
+          # Output file paths for debugging
+          echo "Found AAB file at: $AAB_PATH"
+          echo "Found APK file at: $APK_PATH"
+      
       - name: Create GitHub Release
         run: |
           gh release create $VERSION \
-            .build/outputs/bundle/release/app-release.aab \
-            .build/outputs/flutter-apk/app-release.apk \
+            $AAB_PATH \
+            $APK_PATH \
             --title "Release $VERSION" \
             --notes "Release $VERSION for branch $GITHUB_REF" \
             --repo $GITHUB_REPOSITORY
