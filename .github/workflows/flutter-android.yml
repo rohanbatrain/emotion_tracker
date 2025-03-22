@@ -81,8 +81,8 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create $VERSION \
-            .build/app/outputs/bundle/release/app-release.aab \
-            .build/app/outputs/flutter-apk/app-release.apk \
+            build/app/outputs/bundle/release/app-release.aab \
+            build/app/outputs/flutter-apk/app-release.apk \
             --title "Release $VERSION" \
             --notes "Release $VERSION for branch $GITHUB_REF" \
             --repo $GITHUB_REPOSITORY
