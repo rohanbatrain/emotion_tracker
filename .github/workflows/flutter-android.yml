@@ -77,8 +77,8 @@ jobs:
           ls -la
           
           # Find the .aab file and .apk file
-          AAB_PATH=$(find build/output -name 'app-release.aab')
-          APK_PATH=$(find build/output -name 'app-release.apk')
+          AAB_PATH=$(find . -name 'app-release.aab')
+          APK_PATH=$(find . -name 'app-release.apk')
       
           # If .aab file is found, rename it
           if [ -n "$AAB_PATH" ]; then
