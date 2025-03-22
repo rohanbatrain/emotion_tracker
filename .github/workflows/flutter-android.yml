@@ -57,8 +57,11 @@ jobs:
       - name: Extract release version
         id: extract_version
         run: |
-          VERSION=$(echo ${GITHUB_REF} | sed 's/refs\/heads\/release\///')
+          VERSION=$(echo ${GITHUB_REF#refs/heads/release/})
+          # Ensure the version is valid for a GitHub release tag (e.g., remove any leading or trailing spaces)
+          VERSION=$(echo $VERSION | sed 's/^[^a-zA-Z0-9]*//;s/[^a-zA-Z0-9]*$//')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
+
 
       # Create a GitHub Release for the given version
       - name: Create GitHub Release
