@@ -77,13 +77,13 @@ jobs:
           ls -la
           
           # Find the .aab file and .apk file
-          AAB_PATH=$(find build/outputs -name 'app-release.aab')
-          APK_PATH=$(find build/outputs -name 'app-release.apk')
+          AAB_PATH=$(find build/output -name 'app-release.aab')
+          APK_PATH=$(find build/output -name 'app-release.apk')
       
           # If .aab file is found, rename it
           if [ -n "$AAB_PATH" ]; then
-            mv "$AAB_PATH" "build/outputs/bundle/release/$VERSION-app-release.aab"
-            AAB_PATH="build/outputs/bundle/release/$VERSION-app-release.aab"
+            mv "$AAB_PATH" "build/output/bundle/release/$VERSION-app-release.aab"
+            AAB_PATH="build/output/bundle/release/$VERSION-app-release.aab"
           else
             echo "Error: app-release.aab not found!"
             exit 1
@@ -91,8 +91,8 @@ jobs:
       
           # If .apk file is found, rename it
           if [ -n "$APK_PATH" ]; then
-            mv "$APK_PATH" "build/outputs/flutter-apk/$VERSION-app-release.apk"
-            APK_PATH="build/outputs/flutter-apk/$VERSION-app-release.apk"
+            mv "$APK_PATH" "build/output/flutter-apk/$VERSION-app-release.apk"
+            APK_PATH="build/output/flutter-apk/$VERSION-app-release.apk"
           else
             echo "Error: app-release.apk not found!"
             exit 1
