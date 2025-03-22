@@ -69,6 +69,14 @@ jobs:
           VERSION=$(echo ${GITHUB_REF} | sed 's/refs\/heads\/release\///')
           echo "VERSION=${VERSION}" >> $GITHUB_ENV
 
+      - name: Print Current Directory
+        run: |
+          echo "Current directory:"
+          pwd
+          echo "Listing contents of the current directory:"
+          ls -la
+
+
       # Create a GitHub Release for the given version
       - name: Create GitHub Release
         run: |
